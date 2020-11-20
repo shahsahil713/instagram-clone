@@ -34,7 +34,11 @@ function Guest() {
           Developed By <i>Sahil Shah</i>
         </p>
         <p>
-          <a href="" target="_blank" className="github__link">
+          <a
+            href="https://github.com/shahsahil713/instagram-clone"
+            target="_blank"
+            className="github__link"
+          >
             <GitHubIcon style={{ color: "black" }} className="github" />
           </a>
         </p>
