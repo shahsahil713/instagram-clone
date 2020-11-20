@@ -1,4 +1,9 @@
-import { Button, LinearProgress, TextField } from "@material-ui/core";
+import {
+  Button,
+  CircularProgress,
+  LinearProgress,
+  TextField,
+} from "@material-ui/core";
 import React, { useState } from "react";
 import { db, storage } from "../config/firbase";
 import firebase from "firebase";
@@ -7,12 +12,14 @@ function ImageUpload({ username }) {
   const [caption, setCaption] = useState("");
   const [image, setImage] = useState(null);
   const [progress, setProgress] = useState(0);
+  const [isUploading, setIsUploading] = useState(false);
   const handleChange = (e) => {
     if (e.target.files[0]) {
       setImage(e.target.files[0]);
     }
   };
   const handleUpload = () => {
+    setIsUploading(true);
     const uploadTask = storage.ref(`images/${image.name}`).put(image);
     uploadTask.on(
       "state_changed",
@@ -27,6 +34,7 @@ function ImageUpload({ username }) {
         //error function
         console.log(err);
         alert(err.message);
+        setIsUploading(false);
       },
       () => {
         //complete function
@@ -45,6 +53,7 @@ function ImageUpload({ username }) {
             setProgress(0);
             setCaption("");
             setImage(null);
+            setIsUploading(false);
           });
       }
     );
@@ -61,7 +70,7 @@ function ImageUpload({ username }) {
           onChange={(e) => setCaption(e.target.value)}
           variant="outlined"
         />
-        <Button variant="contained" component="label">
+        <Button variant="contained" component="label" className="upload_btn">
           Upload Photo
           <input type="file" hidden onChange={handleChange} />
         </Button>
@@ -72,14 +81,20 @@ function ImageUpload({ username }) {
         value={progress}
         max="100"
       />
-      <Button
-        variant="contained"
-        className="imageupload__btn"
-        color="primary"
-        onClick={handleUpload}
-      >
-        Post
-      </Button>
+      {isUploading ? (
+        <div className="loader">
+          <CircularProgress />
+        </div>
+      ) : (
+        <Button
+          variant="contained"
+          className="imageupload__btn"
+          color="primary"
+          onClick={handleUpload}
+        >
+          Post
+        </Button>
+      )}
     </div>
   );
 }
