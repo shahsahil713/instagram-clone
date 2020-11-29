@@ -2,7 +2,7 @@
   margin: 0;
 }
 .app {
-  background-color: #fafafa;
+  /* background-color: #fafafa; */
   height: 100vh;
 }
 .app__header {
@@ -186,4 +186,10 @@
   font-size: 2rem;
   color: red;
   padding-right: 10px;
+}
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }

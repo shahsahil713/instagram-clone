@@ -106,9 +106,9 @@ function Post({ postId, username, imageUrl, caption, user }) {
       {user && (
         <>
           <div className="post_comments">
-            {comments.map((comment) => {
+            {comments.map((comment, index) => {
               return (
-                <p>
+                <p key={index}>
                   <strong>{comment.username} </strong>
                   {comment.text}
                 </p>

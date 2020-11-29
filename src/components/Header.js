@@ -7,32 +7,50 @@ import { auth } from "../config/firbase";
 import ImageUpload from "./ImageUpload";
 import Posts from "./Posts";
 import Guest from "./Guest";
+import Loadnig from "./Loadnig";
 
 function Header() {
   const [openL, setOpenL] = useState(false);
   const [openS, setOpenS] = useState(false);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   function logout() {
     auth
       .signOut()
       .then((res) => {
-        setUser(null);
+        setUser({});
       })
       .catch((e) => console.log(e.response.data));
   }
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (user) {
-        setUser(user);
-        console.log(user);
+    setIsLoading(true);
+    auth.onAuthStateChanged((authuser) => {
+      if (authuser) {
+        setIsLoggedIn(true);
+        setIsLoading(false);
+        const injectDisplayName = () => {
+          if (authuser.displayName === null) {
+            setTimeout(() => {
+              injectDisplayName();
+            }, 500);
+          } else {
+            setUser(authuser);
+          }
+        };
+
+        injectDisplayName();
       } else {
-        setUser(null);
+        setUser({});
+        setIsLoggedIn(false);
+        setIsLoading(false);
       }
     });
-    return () => {
-      unsubscribe();
-    };
+    // return () => {
+    //   unsubscribe();
+    // };
   }, []);
+  if (isLoading) return <Loadnig />;
   return (
     <div>
       <LoginModal openL={openL} setOpenL={setOpenL} />
@@ -43,7 +61,7 @@ function Header() {
           src="https://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png"
         />
         <div>
-          {user ? (
+          {isLoggedIn ? (
             <>
               <Button>{user.displayName}</Button>
               <Button onClick={logout}>Logout</Button>
@@ -56,7 +74,7 @@ function Header() {
           )}
         </div>
       </div>
-      {user !== null ? (
+      {isLoggedIn ? (
         <>
           <ImageUpload username={user.displayName} /> <Posts user={user} />
         </>

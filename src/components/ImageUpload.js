@@ -1,14 +1,10 @@
-import {
-  Button,
-  CircularProgress,
-  LinearProgress,
-  TextField,
-} from "@material-ui/core";
+import { Button, CircularProgress, TextField } from "@material-ui/core";
 import React, { useState } from "react";
 import { db, storage } from "../config/firbase";
 import firebase from "firebase";
 
 function ImageUpload({ username }) {
+  // console.log(username);
   const [caption, setCaption] = useState("");
   const [image, setImage] = useState(null);
   const [progress, setProgress] = useState(0);
@@ -19,7 +15,9 @@ function ImageUpload({ username }) {
     }
   };
   const handleUpload = () => {
+    if (image === null) return;
     setIsUploading(true);
+
     const uploadTask = storage.ref(`images/${image.name}`).put(image);
     uploadTask.on(
       "state_changed",
